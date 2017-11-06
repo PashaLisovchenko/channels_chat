@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}My shop{% endblock %}</title>
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+</head>
+<body>
+    <div id="header">
+        <a href="/" class="logo">My chat</a>
+    </div>
+    <div id="subheader">
+        <span class="user">
+            {% if request.user.is_authenticated %}
+            Hello {{ request.user.username}},
+            <a href="{% url "account:logout" %}">Logout</a>
+            {% else %}
+                <a href="{% url "account:login" %}">Log-in</a>
+                |
+                <a href="{% url "account:signup" %}">Sign-up</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

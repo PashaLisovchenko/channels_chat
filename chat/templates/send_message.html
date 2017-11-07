@@ -12,32 +12,27 @@
         crossorigin="anonymous">
 </script>
 <script>
-$(document).ready(function(){
-    var user = $('#user');
-    var msgArea = $('#msgArea');
-    var elementMessage = $('#message');
+    $(document).ready(function(){
+        var msgArea = $('#msgArea');
+        var elementMessage = $('#message');
+        var webSocket = new WebSocket("ws://" + window.location.host + "/chat/");
 
-    var webSocket = new WebSocket("ws://" + window.location.host + "/chat/");
-
-    webSocket.onmessage = function(message) {
-        msgArea.append('<p><strong>'+ user.text() +'</strong> : ' + message.data + '</p>');
-        <!--alert(message.data);-->
-    }
-    $('#btnSubmit').click(function(e) {
-        webSocket.send(elementMessage.val())
-    })
-})
+        webSocket.onmessage = function(message) {
+            var data = JSON.parse(message.data);
+            msgArea.append('<p><strong>'+ data.username +': </strong>'+ data.message +'</p>');
+        };
+        $('#btnSubmit').click(function(e) {
+            webSocket.send(elementMessage.val())
+        })
+    });
 </script>
 <body>
-<div class="username" style="display: none;">
-    {% if request.user.is_authenticated %}
-    <p id="user">{{ user.username }}</p>
-    {% endif %}
-</div>
-
 <div class="chat" id="msgArea">
 </div>
-<p><input type="text" id="message"/></p>
-<p><input type="submit" value="Отправить сообщение" id="btnSubmit" /></p>
+<div class="mess">
+    <p><input type="text" id="message"/></p>
+    <p><input type="submit" value="Отправить сообщение" id="btnSubmit" /></p>
+</div>
+
 </body>
 </html>

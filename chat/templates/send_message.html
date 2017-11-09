@@ -14,12 +14,18 @@
 <script>
     $(document).ready(function(){
         var msgArea = $('#msgArea');
+        var user = $('#btnSubmit').data('sender');
         var elementMessage = $('#message');
         var webSocket = new WebSocket("ws://" + window.location.host + "/chat/");
 
         webSocket.onmessage = function(message) {
             var data = JSON.parse(message.data);
-            msgArea.append('<p><strong>'+ data.username +': </strong>'+ data.message +'</p>');
+            if (user == data.username){
+                msgArea.append('<p><strong> You: </strong>'+ data.message +'</p>');
+            }
+            else {
+                msgArea.append('<p><strong>'+ data.username +': </strong>'+ data.message +'</p>');
+            }
         };
         $('#btnSubmit').click(function(e) {
             webSocket.send(elementMessage.val())
@@ -31,7 +37,7 @@
 </div>
 <div class="mess">
     <p><input type="text" id="message"/></p>
-    <p><input type="submit" value="Отправить сообщение" id="btnSubmit" /></p>
+    <p><input type="submit" value="Отправить сообщение" id="btnSubmit" data-sender="{{ request.user.username }}" /></p>
 </div>
 
 </body>
